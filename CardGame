@@ -22,8 +22,8 @@ Include Irvine32.inc
  cardsuit byte 5,4,3,6
  cardnum byte '2','3','4','5','6','7','8','9','10','J','Q','K','A'
 
-.code
 
+.code
 main PROC
 
 call clrscr
@@ -31,20 +31,21 @@ call clrscr
 call play
 
 exit
+
 ;------------------------------------------------------------------------------------------------
 play proc
 call randomize
 
 ;INITIAL CARD
 
-mov eax, 52		        	;set to 52 for 52 cards
-call randomrange 		    ;call random range from 0-51 and move it to eax register
-inc eax 			          ;increase eax by 1 so to get a number betwen 1-52, like the cards
-inc dealt[eax]			    ;increase dealt[eax] to 1 to be used as a flag and will later be checked if card has already been dealt
-mov ebx, eax			      ;moves the currently dealt card into ebx, will be later used to see if the same numbered card has been dealt
-inc count		           	;increase card dealt
+mov eax, 52			;set to 52 for 52 cards
+call randomrange 		;call random range from 0-51 and move it to eax register
+inc eax 			;increase eax by 1 so to get a number betwen 1-52, like the cards
+inc dealt[eax]			;increase dealt[eax] to 1 to be used as a flag and will later be checked if card has already been dealt
+mov ebx, eax			;moves the currently dealt card into ebx, will be later used to see if the same numbered card has been dealt
+inc count			;increase card dealt
 
-call checkCards		    	;checks card's value and suit
+call checkCards			;checks card's value and suit
 mov edx, offset blank		;creates a space (just to make things easier to see)
 call writeString
 call crlf
@@ -57,10 +58,10 @@ mov eax, 52
 call randomrange
 inc eax
 
-.if (dealt[eax]==1)		  ;checks if the value in dealt[] is already 1, then that means this card has been dealt
-jmp deal			          ;this program will jump back and deal again until a new card is dealt
+.if (dealt[eax]==1)		;checks if the value in dealt[] is already 1, then that means this card has been dealt
+jmp deal			;this program will jump back and deal again until a new card is dealt
 
-.else				            ;if new card is dealt then repeat from Line 44
+.else				;if new card is dealt then repeat from Line 44
 inc dealt[eax]
 call checkCards			
 mov edx, offset blank
@@ -70,14 +71,14 @@ call crlf
 .endif
 
 
-.if (ebx==eax)			    ;checks to see if the previous card and this card is the same, then you LOSE!
+.if (ebx==eax)			;checks to see if the previous card and this card is the same, then you LOSE!
 inc winlost[1]
 mov eax, (white+black*16)
 call setTextColor
 mov edx, offset loser
 call writeString
 
-.elseif (count==52)	  	;if all cards are dealth then you WIN!
+.elseif (count==52)		;if all cards are dealth then you WIN!
 inc winlost[0]
 mov eax, (white+black*16)
 call setTextColor
@@ -85,7 +86,7 @@ mov edx, offset winner
 call writeString
 
 .else
-mov ebx, eax			      ;move the current drawn card into ebx
+mov ebx, eax			;move the current drawn card into ebx
 jmp deal
 
 .endif
@@ -109,34 +110,34 @@ sub a, 13
 inc counter
 .endw
 
-.if (eax>39 )			      ;if cards are between 40-52
-sub eax, 39			        ;subtract 39 from eax to get card value
-mov suit, 6  ; 			    ;put 6 into suit variable to represent SPADE char
+.if (eax>39 )			;if cards are between 40-52
+sub eax, 39			;subtract 39 from eax to get card value
+mov suit, 6  ; 			;put 6 into suit variable to represent SPADE char
 
 push eax
 mov eax, (black+white*16)	;set color to print out card value and suit in black
 call settextColor
 pop eax
 
-.elseif (eax>26)		      ;if cards are between 27-39
-sub eax, 26			          ;subtract 26 from eax to get card value
-mov suit, 3  			        ;put 4 into suit variable to represent HEART char
+.elseif (eax>26)		;if cards are between 27-39
+sub eax, 26			;subtract 26 from eax to get card value
+mov suit, 3  			;put 4 into suit variable to represent HEART char
 
 push eax
 mov eax, (red+white*16)		;set color to print out card value and suit in red
 call settextColor
 pop eax
 
-.elseif (eax>13)		      ;same as above with cards between 14-26 and DIAMONDS char
+.elseif (eax>13)		;same as above with cards between 14-26 and DIAMONDS char
 sub eax, 13
 mov suit, 4 ; diamond
 
-push eax                
+push eax
 mov eax, (red+white*16)
 call settextColor
 pop eax
 
-.else				              ;everything else would be CLUBS
+.else				;everything else would be CLUBS
 
 mov suit, 5 ; clubs
 push eax
@@ -145,3 +146,35 @@ call settextColor
 pop eax
 
 .endif
+
+
+;IF CARDS ARE
+
+.if (eax==1)			;if cards is a 1, an A for ace will be written on screen
+mov eax, 'A'
+call writeChar
+.elseif (eax==11)		;if cards is a 11, a J for jack will be written on screen
+mov eax, 'J'
+call writeChar
+.elseif (eax==12)		;if cards is a 12, an Q for queen will be written on screen
+mov eax, 'Q'
+call writeChar
+.elseif (eax==13)		;if cards is a 13, an K for king will be written on screen
+mov eax, 'K'
+call writeChar
+.else
+call writeDec			;if card is between 2-10, just it's value with be written on screen
+.endif
+
+push eax			
+movzx eax, suit			
+call writeChar			;draws out the char of the suit
+pop eax
+
+ret
+checkCards endp
+
+main ENDP
+
+END main
+
