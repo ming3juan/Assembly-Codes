@@ -1,6 +1,6 @@
 Program Description : 
 Runs a 52 card card game where cards are dealt to you until a pair is found. 
-No cards are repeated and you lose if a pair of cards is dealt in a row. 
+No cards are repeated and you lose if a pair of cards is dealt one after another. 
 You win if you can make it through the whole deck. Usually loses.
 Buuuuuut if you win, then try your luck on the lottery! :)
 
