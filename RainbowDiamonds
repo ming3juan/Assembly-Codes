@@ -1,4 +1,5 @@
-;This program draws diamonds in random rainbow colored stars
+Program Description : 
+Draws diamonds in random rainbow colored stars
   
 INCLUDE Irvine32.inc
 
