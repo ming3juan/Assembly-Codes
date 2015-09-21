@@ -1,0 +1,127 @@
+;This program draws diamonds in random rainbow colored stars
+  
+INCLUDE Irvine32.inc
+
+.data  
+delta dword ?   ; possible deltas   3,2,6,4,5
+blanks byte ?
+stars byte ?
+x byte 0
+y byte 2
+z byte 0
+w byte 2
+color byte ?
+
+.code
+   main PROC
+  
+ call clrscr    ;clears the screen
+
+mov ecx, 3
+moreDia:
+ push ecx
+ mov z, 0
+ mov ecx, 5
+ multi:
+ push ecx
+ call drawTop
+ call drawBottom
+ add z, 14
+ mov bl, w
+ mov y, bl
+ pop ecx
+ loop multi
+ add w, 13
+ pop ecx
+loop moreDia
+
+mov eax, (white+black*16)
+call settextColor
+ 
+
+	 
+	    	
+	exit
+         
+main ENDP
+;------------------------------------------------------------------
+drawTop proc
+mov blanks, 7
+mov stars, 1
+call randomize
+
+    mov ecx, 7
+	outside:
+	mov bl, z
+        mov x, bl
+        push ecx
+	  movzx ecx, blanks
+          drawSp:
+	     mov dl,x
+             mov dh, y
+             call gotoxy 
+             mov eax, ' '
+             call writeChar
+             inc x
+          loop drawSp
+	  movzx ecx, stars
+          drawSt:
+             mov al, 16
+             call randomRange
+	     mov color, al
+ 	     mov al, (color+black*16)
+             call setTextColor
+             mov eax,'*'
+	     call writeChar
+	     inc x
+          loop drawSt
+	dec blanks
+	add stars, 2
+	inc y
+        pop ecx
+        loop outside
+	     
+
+    ret
+drawTop endp
+;-------------------------------------------------------------------------------------
+drawBottom proc
+mov blanks, 2
+mov stars, 11
+call randomize
+  
+   mov ecx, 6
+	outside:
+	mov bl, z
+        mov x, bl
+        push ecx
+	  movzx ecx, blanks
+          drawSp:
+	     mov dl,x
+             mov dh, y
+             call gotoxy 
+             mov eax, ' '
+             call writeChar
+             inc x
+          loop drawSp
+	  movzx ecx, stars
+          drawSt:
+	     mov al, 16
+             call randomRange
+	     mov color, al
+ 	     mov al, (color+black*16)
+             call setTextColor
+             mov eax,'*'
+	     call writeChar
+	     inc x
+          loop drawSt
+	inc y
+	inc blanks
+	sub stars, 2
+        pop ecx
+        loop outside
+	     
+    ret
+ drawBottom endp
+ 
+END main
