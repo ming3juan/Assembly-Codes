@@ -1,0 +1,298 @@
+Draws a lower case a in all a's and a lower case y in all y's
+It traverses upward slowly then once it reaches a certain point, it flips upside down and traverses back down.
+  
+INCLUDE Irvine32.inc
+;print picture no procedure
+.data  
+ array byte 30,' '
+ array1 byte 1,' ',1,' ',4,'a',2,' ',3,'y',1,' ',3,'y' 
+ array2 byte 1,' ',6,'a',1,' ',3,'y',1,' ',3,'y'
+ array3 byte 1,' ',2,'a',2,' ',2,'a',2,' ',2,'y',1,' ',2,'y',1,' '
+ array4 byte 1,' ',2,' ',4,'a',2,' ',2,'y',1,' ',2,'y',1,' '
+ array5 byte 1,' ',6,'a',3,' ',4,'y',1,' '
+ array6 byte 1,' ',2,'a',2,' ',2,'a',3,' ',3,'y',2,' '
+ array7 byte 1,' ',6,'a',4,' ',2,'y',2,' '
+ array8 byte 1,' ',1,' ',3,'a',1,' ',1,'a',4,' ',2,'y',2,' '
+ array9 byte 1,' ',8,' ',4,'y',2,' '
+ array10 byte 1,' ',8,' ',3,'y',3,' '
+
+ y byte ?
+ delta dword ?
+ l dword ?
+ lenarray = lengthof array
+ lenarray1 = lengthof array1
+ lenarray2 = lengthof array2
+ lenarray3 = lengthof array3
+ lenarray4 = lengthof array4
+ lenarray5 = lengthof array5
+ lenarray6 = lengthof array6
+ lenarray7 = lengthof array7
+ lenarray8 = lengthof array8
+ lenarray9 = lengthof array9
+ lenarray10 = lengthof array10
+ grandarray dword 22 dup(?) 
+ ; grandarray contains the the three offsets and the 3 lengths of the arrays
+ .code
+main proc
+ call clrscr
+ 
+call drawReg
+call drawUpsideDown
+   
+
+exit  
+   
+main ENDP
+;---------------------------------------------------------
+drawReg proc
+ mov eax,0
+ mov al, 15
+ mov y, al
+ mov ecx, 10
+ 
+ moveup:  
+ push ecx
+ mov dh,y
+ mov dl,5   
+ call gotoxy   ;line will start at 5 down 5 across
+  
+;---------------------------
+; fill grandarray upside down using the procedure fill2
+  call fill
+
+;---------------------------
+; loop around 11 times to print each line with drawline
+ mov esi,offset grandarray
+ sub esi,4   ; we start a dword back
+ mov ecx,11
+ outer:
+   push ecx
+   ; get each array from grandarry data
+   add esi,4
+   mov edi, [esi]
+   add esi, 4
+   mov ecx, [esi]
+   mov l,ecx
+   mov ecx, l
+   
+   inner:
+     push ecx     ;use data from eachg line to det up  
+     mov ecx,0
+     mov   cl, [edi]
+      
+     inc edi
+     mov al,[edi]
+     call drawline
+     inc edi
+      
+     pop ecx
+   loop inner
+   inc dh
+   mov dl,5
+   pop ecx
+   call gotoxy
+  loop outer
+  pop ecx
+  dec y
+  mov eax, 700
+  call delay
+loop moveup
+
+
+ret
+drawReg endp
+;-------------------------------------------------------------
+drawUpsideDown proc
+
+ mov eax,0
+ mov al, 5
+ mov y, al
+ mov ecx, 10
+ 
+ moveup:  
+ push ecx
+ mov dh,y
+ mov dl,5   
+ call gotoxy   ;line will start at 5 down 5 across
+  
+;---------------------------
+; fill grandarray upside down using the procedure fill2
+  call fill2
+
+;---------------------------
+; loop around 11 times to print each line with drawline
+ mov esi,offset grandarray
+ sub esi,4   ; we start a dword back
+ mov ecx,11
+ outer:
+   push ecx
+   ; get each array from grandarry data
+   add esi,4
+   mov edi, [esi]
+   add esi, 4
+   mov ecx, [esi]
+   mov l,ecx
+   mov ecx, l
+   
+   inner:
+     push ecx     ;use data from eachg line to det up  
+     mov ecx,0
+     mov   cl, [edi]
+      
+     inc edi
+     mov al,[edi]
+     call drawline
+     inc edi
+      
+     pop ecx
+   loop inner
+   inc dh
+   mov dl,5
+   pop ecx
+   call gotoxy
+  loop outer
+  pop ecx
+  inc y
+  mov eax, 700
+  call delay
+loop moveup
+
+ret
+drawUpsideDown endp
+;-----------------------------------------------------------------
+drawline proc
+     
+    lineloop:    
+       call writechar
+       inc dl
+    loop lineloop
+    ret
+ drawline endp
+;--------------------------------------------------------------- 
+fill proc
+; dword array will be of the form 
+; off len off len off len
+  mov esi,offset grandarray
+
+  mov [esi],offset array1
+  add esi,4
+  mov ebx, lenarray1/2
+  mov [esi],ebx
+  add esi,4
+  mov [esi],  offset array2
+  add esi,4
+  mov ebx, lenarray2/2
+  mov [esi],ebx
+  add esi,4
+  mov [esi],   offset array3
+  add esi,4
+  mov ebx, lenarray3/2
+  mov [esi],ebx
+  add esi,4
+  mov [esi],offset array4
+  add esi,4
+  mov ebx, lenarray4/2
+  mov[esi], ebx
+  add esi,4
+  mov [esi],offset array5
+  add esi,4
+  mov ebx, lenarray5/2
+  mov[esi], ebx
+  add esi,4
+  mov [esi],offset array6
+  add esi,4
+  mov ebx, lenarray6/2
+  mov[esi], ebx
+  add esi,4
+  mov [esi],offset array7
+  add esi,4
+  mov ebx, lenarray7/2
+  mov[esi], ebx
+  add esi,4
+  mov [esi],offset array8
+  add esi,4
+  mov ebx, lenarray8/2
+  mov[esi], ebx
+  add esi,4
+  mov [esi],offset array9
+  add esi,4
+  mov ebx, lenarray9/2
+  mov[esi], ebx
+  add esi,4
+  mov [esi],offset array10
+  add esi,4
+  mov ebx, lenarray10/2
+  mov[esi], ebx
+  add esi,4
+  mov [esi],offset array
+  add esi,4
+  mov ebx, lenarray/2
+  mov [esi],ebx
+
+  ret
+fill endp
+
+;----------------------------------------------
+fill2 proc
+; dword array will be of the form 
+; off len off len off len
+  mov esi,offset grandarray
+
+    mov [esi],offset array
+  add esi,4
+  mov ebx, lenarray/2
+  mov [esi],ebx
+  add esi,4
+  mov [esi],offset array10
+  add esi,4
+  mov ebx, lenarray10/2
+  mov [esi],ebx
+  add esi,4
+  mov [esi],  offset array9
+  add esi,4
+  mov ebx, lenarray9/2
+  mov [esi],ebx
+  add esi,4
+  mov [esi],   offset array8
+  add esi,4
+  mov ebx, lenarray8/2
+  mov [esi],ebx
+  add esi,4
+  mov [esi],offset array7
+  add esi,4
+  mov ebx, lenarray7/2
+  mov[esi], ebx
+  add esi,4
+  mov [esi],offset array6
+  add esi,4
+  mov ebx, lenarray6/2
+  mov[esi], ebx
+  add esi,4
+  mov [esi],offset array5
+  add esi,4
+  mov ebx, lenarray5/2
+  mov[esi], ebx
+  add esi,4
+  mov [esi],offset array4
+  add esi,4
+  mov ebx, lenarray4/2
+  mov[esi], ebx
+  add esi,4
+  mov [esi],offset array3
+  add esi,4
+  mov ebx, lenarray3/2
+  mov[esi], ebx
+  add esi,4
+  mov [esi],offset array2
+  add esi,4
+  mov ebx, lenarray2/2
+  mov[esi], ebx
+  add esi,4
+  mov [esi],offset array1
+  add esi,4
+  mov ebx, lenarray1/2
+  mov[esi], ebx
+
+  ret
+fill2 endp
+ END main
